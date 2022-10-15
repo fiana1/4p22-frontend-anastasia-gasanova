@@ -61,7 +61,6 @@
     font-family: sans-serif;
     font-weight: 400;
     font-size: 28px;
-
 }
 .main-list__letter{
     z-index: 1000;
@@ -83,4 +82,15 @@
     width: 73vw;
     height: 54px;
 }
+.main-links__info{
+    left: -2px;
+    top: -10px;
+    position: absolute;
+    padding: 3px;
+    background-color: #DB7093;
+    color: white;
+    border-radius: 30px;
+    font-size: 10px;
+}
+
 
