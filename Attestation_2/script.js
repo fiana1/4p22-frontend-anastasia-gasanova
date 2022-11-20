@@ -1,100 +1,89 @@
-'use strict';
+"use strict";
 
-const emailError = document.getElementById('email-error');
-const passwordError = document.getElementById('password-error');
-const passwordrepeatError = document.getElementById('passwordrepeat-error');
-const button = document.getElementById('submit');
+const errorColor = "#EE2424";
+const correctColor = "#787878";
 
-button.addEventListener('click', (event) => {
+const emailOutput = document.getElementById("email-output");
+const emailBorder = document.getElementById("email");
+const passwordOutput = document.getElementById("password-output");
+const passwordBorder = document.getElementById("password");
+const confirmationOutput = document.getElementById("confirmation-output");
+const confirmationBorder = document.getElementById("confirmation");
 
-const email = document.getElementById('email').value;
-const inputEmail = document.querySelector('input[name=email]');
-const password = document.getElementById('password').value;
-const inputPassword = document.querySelector('input[name=password]');
-const passwordrepeat = document.getElementById('passwordrepeat').value;
-const inputPasswordrepeat = document.querySelector('input[name=passwordrepeat]');
-const aboutme = document.getElementById('textarea').value;
-const checkbox = document.getElementById('checkbox').checked;
-let gender;
+const userData = {
+	email: "",
+	password: "",
+	confirmation: "",
+	radio: "",
+	textarea: "",
+	checkbox: "",
+};
 
-event.preventDefault();
+const form = document.getElementById("form");
 
-function getGender() {
-  const man = document.getElementById('radio1');
-  const woman = document.getElementById('radio2');
+form.addEventListener("submit", (event) => {
+	event.preventDefault();
 
-  if (man.checked) {
-      gender = 'MAN';
-  } else if (woman.checked) {
-      gender = 'WOMAN';
-  }
-}
+	function validateEmail(email) {
+		const re =
+			/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+		return re.test(String(email).toLowerCase());
+	}
 
-getGender();
-   
-    
-    function validateEmail(email) {
-      const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-      return re.test(String(email).toLowerCase());
-    }
+	const formData = new FormData(form);
 
-    if (!validateEmail(email)) {
-      inputEmail.style.borderColor = 'rgba(238, 36, 36, 1)';
-      emailError.innerText = "Email введён некорректно";
-    }
-    
-    if (!email) {
-      inputEmail.style.borderColor = 'rgba(238, 36, 36, 1)';
-      emailError.innerText = "Поле обязательно для заполнения";
-    }
+	const email = formData.get("email");
+	const password = formData.get("password");
+	const confirmation = formData.get("confirmation");
+	const radio = formData.get("gender-radio-group");
+	const textarea = formData.get("textarea");
+	const checkbox = formData.get("check");
 
-    if (password.length < 8) {
-      inputPassword.style.borderColor = 'rgba(238, 36, 36, 1)';
-      passwordError.innerText = "Пароль должен содержать не менее 8 символов";
-    }
+	let isValid = true;
 
-    if (password === "") {
-      inputPassword.style.borderColor = 'rgba(238, 36, 36, 1)';
-      passwordError.innerText = "Поле обязательно для заполнения";
-    }
+	if (email.trim() === "") {
+		emailBorder.style.borderColor = errorColor;
+		emailOutput.innerText = "Поле обязательно для заполнения";
+		isValid = false;
+	} else if (!validateEmail(email)) {
+		emailBorder.style.borderColor = errorColor;
+		emailOutput.innerText = "Email введён некорректно";
+		isValid = false;
+	} else {
+		emailBorder.style.borderColor = correctColor;
+		emailOutput.innerText = "";
+	}
 
-    if (passwordrepeat === "") {
-      inputPasswordrepeat.style.borderColor = 'rgba(238, 36, 36, 1)';
-      passwordrepeatError.innerText = "Пароли не совпадают";
-      }
+	if (password.trim() === "") {
+		passwordBorder.style.borderColor = errorColor;
+		passwordOutput.innerText = "Поле обязательно для заполнения";
+		isValid = false;
+	} else if (password.length < 8) {
+		passwordBorder.style.borderColor = errorColor;
+		passwordOutput.innerText = "Пароль должен содержать не менее 8 символов";
+		isValid = false;
+	} else {
+		passwordBorder.style.borderColor = correctColor;
+		passwordOutput.innerText = "";
+	}
 
-    if (passwordrepeat != password) {
-      inputPasswordrepeat.style.borderColor = 'rgba(238, 36, 36, 1)';
-      passwordrepeatError.innerText = "Пароли не совпадают";
-    }
+	if (confirmation.trim() === "" || confirmation !== password) {
+		confirmationBorder.style.borderColor = errorColor;
+		confirmationOutput.innerText = "Пароли не совпадают";
+		isValid = false;
+	} else {
+		confirmationBorder.style.borderColor = correctColor;
+		confirmationOutput.innerText = "";
+	}
 
-    else {
-      if(validateEmail(email) === true && password.length >= 8 && password === passwordrepeat) {
-        inputPasswordrepeat.style.borderColor = '#787878';
-        inputPassword.style.borderColor = '#787878';
-        inputEmail.style.borderColor = '#787878';
-        emailError.innerText = '';
-        passwordrepeatError.innerText = '';
-        passwordError.innerText = '';
+	if (isValid === true) {
+		userData.email = email;
+		userData.password = password;
+		userData.confirmation = confirmation;
+		userData.radio = radio;
+		userData.textarea = textarea;
+		userData.checkbox = checkbox;
+		console.log(userData);
+	}
 
-        makeUser()
-        
-      }
-    }
-
-
-    function makeUser() {
-
-      let user = new Object();
-
-        user.email = email;
-        user.password = password;
-        user.aboutme = aboutme;
-        user.agree = checkbox;
-        user.gender = gender;
-
-        return console.log(user)
-      }
-
-      
-})
+});
